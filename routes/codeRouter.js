@@ -20,5 +20,6 @@ router.patch(
   userController.isAuthenticated,
   codeController.updateCode
 );
+router.post("/compile", codeController.compileCode);
 
 module.exports = router;

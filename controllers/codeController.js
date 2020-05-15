@@ -1,6 +1,9 @@
-const hackerEarth = require("hackerearth-node");
+const HackerEarth = require("hackerearth-node");
 const Code = require("../models/codeModel");
 const codeValidator = require("../utils/codeValidator");
+require("dotenv").config();
+
+const hackerEarth = new HackerEarth(process.env.HACKEREARTH_SECRET);
 
 exports.getAllCodes = async (req, res) => {
   try {
@@ -100,7 +103,31 @@ exports.updateCode = async (req, res) => {
   }
 };
 
-exports.compileCode = (req, res) => {
+exports.compileCode = async (req, res) => {
+  if (!req.body.code) {
+    return res.status(400).json({
+      status: "fail",
+      msg: "Code is required.",
+    });
+  }
   try {
-  } catch (err) {}
+    const config = {
+      time_limit: 1,
+      memory_limit: 323244,
+      source: req.body.code,
+      input: "" || req.body.input,
+      language: "Py",
+    };
+    const output = await hackerEarth.run(config);
+    res.status(200).json({
+      status: "success",
+      result: JSON.parse(output),
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({
+      status: "fail",
+      msg: err,
+    });
+  }
 };
