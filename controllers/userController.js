@@ -4,22 +4,6 @@ const User = require("../models/userModel");
 const registerValidator = require("../utils/registerValidator");
 const loginValidator = require("../utils/loginValidator");
 
-exports.getAllUsers = async (req, res) => {
-  try {
-    const users = await User.find({});
-    res.status(200).json({
-      status: "success",
-      users,
-    });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      status: "error",
-      err,
-    });
-  }
-};
-
 exports.registerUser = async (req, res) => {
   const { errors, isValid } = registerValidator(req.body);
 

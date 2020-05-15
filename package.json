@@ -4,7 +4,8 @@
   "description": "codestock api",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "node server.js",
+    "devstart": "nodemon server.js"
   },
   "author": "Abhi kumar",
   "license": "ISC",

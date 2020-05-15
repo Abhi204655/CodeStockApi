@@ -7,7 +7,9 @@ const hackerEarth = new HackerEarth(process.env.HACKEREARTH_SECRET);
 
 exports.getAllCodes = async (req, res) => {
   try {
-    const codes = await Code.find({ author: req.user.id });
+    const codes = await Code.find({ authorId: req.user.id }).sort({
+      timeStamp: "desc",
+    });
     res.status(200).json({
       status: "success",
       codes,
@@ -34,7 +36,9 @@ exports.saveCode = async (req, res) => {
     const code = await Code.create({
       title: req.body.title,
       code: req.body.code,
-      author: req.user.id,
+      authorId: req.user.id,
+      authorName: req.user.name,
+      tags: req.body.tags,
     });
     if (code) {
       res.status(201).json({
@@ -59,23 +63,30 @@ exports.saveCode = async (req, res) => {
 exports.deleteCode = async (req, res) => {
   try {
     const code = await Code.find({ _id: req.params.id });
-    if (code.author === req.user.id) {
-      await code.delete();
-      res.status(204).json({
-        status: "success",
-        msg: "Code deleted succesfully",
-      });
+    if (code[0]) {
+      if (code[0].authorId == req.user.id) {
+        const isDeleted = await Code.deleteOne({ _id: code[0].id });
+        return res.status(204).json({
+          status: "success",
+          msg: "Code deleted succesfully",
+        });
+      } else {
+        return res.status(401).json({
+          status: "fail",
+          msg: "Unauthorised",
+        });
+      }
     } else {
-      res.status(401).json({
+      return res.status(404).json({
         status: "fail",
-        msg: "Unauthorised",
+        msg: "Not found",
       });
     }
   } catch (err) {
     console.log(err);
-    res.status(500).json({
+    return res.status(404).json({
       status: "fail",
-      msg: "Server error",
+      msg: "Not found",
     });
   }
 };

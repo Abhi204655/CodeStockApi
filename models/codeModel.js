@@ -14,10 +14,14 @@ const codeSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  author: {
+  authorId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
+  authorName: {
+    type: String,
+  },
+  tags: [String],
 });
 
 module.exports = Code = mongoose.model("Code", codeSchema);
